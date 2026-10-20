@@ -1,0 +1,28 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Runtime databases / logs / generated reports
+*.db
+*.db-wal
+*.db-shm
+alerts.log
+reports/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

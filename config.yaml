@@ -1,0 +1,93 @@
+# ---------------------------------------------------------------------------
+# Secure File Transfer Monitoring System (SFTMS) - default configuration
+# All relative paths are resolved relative to this file's directory.
+# ---------------------------------------------------------------------------
+
+# Directories to monitor recursively (create/move/delete/modify events).
+watch_dirs:
+  - ~/sftms/watch
+
+# Directories considered to hold sensitive material. Any file beneath these
+# directories is treated as sensitive regardless of its filename.
+sensitive_dirs:
+  - ~/sftms/watch/sensitive
+
+# Glob patterns (matched case-insensitively against both the file name and the
+# full path) that mark a file as sensitive.
+sensitive_patterns:
+  - "*.key"
+  - "*.pem"
+  - "*.p12"
+  - "*.pfx"
+  - "*.kdbx"
+  - "*secret*"
+  - "*password*"
+  - "*credential*"
+  - "payroll*"
+  - "*.xlsx"
+  - "*ssn*"
+  - "id_rsa*"
+
+# Path fragments that identify a cloud-sync folder (case-insensitive).
+cloud_folder_patterns:
+  - "*onedrive*"
+  - "*dropbox*"
+  - "*google drive*"
+  - "*googledrive*"
+  - "*gdrive*"
+  - "*icloud*"
+  - "*box sync*"
+  - "*mega sync*"
+
+# Path patterns used to recognise removable media. On real hardware this is
+# corroborated by psutil mount info / OS drive-type APIs; the patterns also
+# allow deterministic demos and testing on machines without a real USB stick.
+removable_path_patterns:
+  - "*usb*"
+  - "*removable*"
+  - "*/media/*"
+  - "*/run/media/*"
+
+# Path patterns used to recognise network shares/mounts.
+network_path_patterns:
+  - "*\\\\*\\*"        # Windows UNC paths (\\server\share)
+  - "*/mnt/network*"
+  - "*smb*"
+  - "*nfs*"
+
+# Paths/globs that should never be logged (runtime artefacts, VCS, temp files).
+ignore_patterns:
+  - "*.tmp"
+  - "*.temp"
+  - "*~"
+  - "*.swp"
+  - "*.part"
+  - "*/.git/*"
+  - "*/__pycache__/*"
+  - "*.db"
+  - "*.db-wal"
+  - "*.db-shm"
+
+# Hashing algorithm: sha256 (default) or md5.
+hash_algorithm: sha256
+
+# Bulk-exfiltration detection: more than this many sensitive/external events
+# within the time window raises a CRITICAL alert.
+bulk_threshold: 50
+bulk_window_seconds: 60
+
+# Storage locations.
+db_path: ~/sftms/sftms.db
+log_dir: ~/sftms/logs
+report_dir: ~/sftms/reports
+
+# Optional desktop notifications (requires the `plyer` package).
+enable_desktop_notifications: false
+
+# Best-effort process attribution of filesystem events.
+# NOTE: filesystem notifications carry no PID, so attribution is approximated by
+# scanning every process's open files via psutil. That scan is expensive (a few
+# seconds per path on Windows) and usually returns nothing for short-lived file
+# copies, so it is DISABLED by default. Turn it on only if you need it; events
+# always log with process_name="unknown" when attribution cannot resolve.
+enable_process_attribution: false
